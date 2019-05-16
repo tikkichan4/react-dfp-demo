@@ -1,6 +1,6 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { AdSlot } from "react-dfp";
+import { DFPSlotsProvider, AdSlot } from "react-dfp";
 
 const styles = theme => ({
   closeBtnContainer: {
@@ -79,20 +79,37 @@ const styles = theme => ({
     }
   }
 });
-class InterstitialAd extends PureComponent {
+class ReactDFPDemo extends Component {
+  state = { visible: true };
   render() {
-    const { classes, adUnitId, hide } = this.props;
+    return (
+      <div>
+        <DFPSlotsProvider dfpNetworkId={this.props.networkId}>
+          <div className="App">
+            <h1>If you see this</h1>
+            <h2>AD is closed, error should be logged on console</h2>
+            {this.renderOverlay()}
+          </div>
+        </DFPSlotsProvider>
+      </div>
+    );
+  }
+  renderOverlay() {
+    const { visible } = this.state;
+    const { classes, adUnitId } = this.props;
+    if (!visible) {
+      return null;
+    }
     return (
       <div role="dialog" className={classes.mediaLightbox}>
         <div className={classes.mask} />
         <div className={classes.mediaLightBoxSlider}>
           <AdSlot
-            renderOutOfThePage
-            slotId="123"
             adUnit={adUnitId}
             onSlotRender={this.onSlotRender}
+            renderOutOfThePage
           />
-          <div onClick={hide} className={classes.closeBtnContainer}>
+          <div onClick={this.hide} className={classes.closeBtnContainer}>
             <div className={`${classes.closeBtn}`}>
               <span>Close</span>
             </div>
@@ -101,6 +118,9 @@ class InterstitialAd extends PureComponent {
       </div>
     );
   }
+  hide = () => {
+    this.setState({ visible: false });
+  };
   onSlotRender = e => {
     const adSlotDiv = document.getElementById(e.slotId);
     const iframe = adSlotDiv.getElementsByTagName("iframe")[0];
@@ -108,4 +128,4 @@ class InterstitialAd extends PureComponent {
     iframe.height = "100%";
   };
 }
-export default withStyles(styles)(InterstitialAd);
+export default withStyles(styles)(ReactDFPDemo);
