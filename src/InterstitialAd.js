@@ -1,9 +1,7 @@
 import React, { PureComponent } from "react";
-import { Spring, animated } from "react-spring/renderprops";
 import { withStyles } from "@material-ui/core/styles";
 import { AdSlot } from "react-dfp";
 
-const windowHeight = window.innerHeight;
 const styles = theme => ({
   closeBtnContainer: {
     padding: theme.spacing.unit * 1.5
